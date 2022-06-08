@@ -1,27 +1,98 @@
-resource "azurerm_virtual_network" "vnet" {
-  name                = "virtual-network"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "StorageAccount-ResourceGroup"
+    storage_account_name = "team2project"
+    container_name       = "tfstate"
+    key                  = "path/to/my/key/prod.terraform.tfstate"
+    access_key = "SHA256:pzsWQji/HedzS2/VFx7X4zhwZrhJMY2Un3VItDFCZZQ ana@cc-48dd47a5-5bc5554f66-jh5xn"
+  }
+}
+
+
+
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=2.97.0"
+    }
+  }
+}
+
+# Configure the Microsoft Azure Provider
+provider "azurerm" {
+  features {}
+}
+
+# Create a resource group
+resource "azurerm_resource_group" "terraform" {
+  name     = "terraform-resources"
+  location = "westus"
+}
+resource "azurerm_network_security_group" "terraform" {
+  name                = "terraform-security-group"
+  location            = azurerm_resource_group.terraform.location
+  resource_group_name = azurerm_resource_group.terraform.name
+}
+resource "azurerm_network_security_rule" "terraform" {
+  name                        = "test123"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.terraform.name
+  network_security_group_name = azurerm_network_security_group.terraform.name
+}
+
+# Create a virtual network within the resource group
+resource "azurerm_virtual_network" "terraform" {
+  name                = "terraform_vnet"
+  location            = azurerm_resource_group.terraform.location
+  resource_group_name = azurerm_resource_group.terraform.name
   address_space       = ["10.0.0.0/16"]
+
+  subnet {
+    name           = "subnet1"
+    address_prefix = "10.0.1.0/24"
+    security_group = azurerm_network_security_group.terraform.id
+  }
+
+  subnet {
+    name           = "subnet2"
+    address_prefix = "10.0.2.0/24"
+    security_group = azurerm_network_security_group.terraform.id
+  }
+  subnet {
+    name           = "subnet3"
+    address_prefix = "10.0.3.0/24"
+    security_group = azurerm_network_security_group.terraform.id
+  }
 }
 
-#Subnet
-resource "azurerm_subnet" "private1" {
-  name                 = "private1"
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefix       = "10.0.1.0/24"
-}
-resource "azurerm_subnet" "private2" {
-  name                 = "private2"
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  resource_group_name  = azurerm_resource_group.rg.name
-  address_prefix       = "10.0.2.0/24"
+output "vnet_id" {
+    value = azurerm_virtual_network.terraform.id
 }
 
-resource "azurerm_subnet" "private3" {
-  resource_group_name  = azurerm_resource_group.rg.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  name                 = "private3"
-  address_prefix      = "10.0.3.0/24"
+
+output "subnet"{
+    value = azurerm_virtual_network.terraform.subnet
+}
+
+output "subnet_id" {
+  value = "${azurerm_virtual_network.terraform.subnet.*.id[1]}"
+
+}
+output "vnet_name"{
+    value = azurerm_virtual_network.terraform.name
+}
+output resource_group_name {
+  value = azurerm_resource_group.terraform.name
+}
+
+output resource_group_location {
+   value = azurerm_resource_group.terraform.location
 }
