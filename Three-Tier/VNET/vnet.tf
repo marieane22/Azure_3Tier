@@ -4,8 +4,7 @@ terraform {
     storage_account_name = "team2project"
     container_name       = "tfstate"
     key                  = "path/to/my/key/prod.terraform.tfstate"
-    access_key = "SHA256:pzsWQji/HedzS2/VFx7X4zhwZrhJMY2Un3VItDFCZZQ ana@cc-48dd47a5-5bc5554f66-jh5xn"
-  }
+    access_key = "0GCZCi57ChyFgG7WEFixbUBWpx72dUefChftkqSS9fhcUB1WhlvTed09zSrePjRB1lsj4aX7KdDX+ASt65cvTw=="
 }
 
 
