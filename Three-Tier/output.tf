@@ -1,34 +1,14 @@
-output "vnet_id" {
-    value = azurerm_virtual_network.terraform.id
+# id - The ID of the MySQL Server.
+output "id_mysql_server" {
+    value = azurerm_mysql_server.mysql_server.id
 }
 
-
-output "subnet"{
-    value = azurerm_virtual_network.terraform.subnet
+# id - The ID of the MySQL Database.
+output "id_mysql_database" {
+    value = azurerm_mysql_database.mysql_db.id
+}
+# id - The ID of the MySQL Firewall Rule.
+output "id_mysql_firewall" {
+  value = azurerm_mysql_firewall_rule.ASG.id
 }
 
-output "subnet_id" {
-  value = azurerm_virtual_network.terraform.id
-}
-output "vnet_name"{
-    value = azurerm_virtual_network.terraform.name
-}
-output resource_group_name {
-  value = azurerm_resource_group.terraform.name
-}
-
-output resource_group_location {
-   value = azurerm_resource_group.terraform.location
-}
-
-output "full_info" {
- value = data.terraform_remote_state.main.outputs.*
-}
-
-output "fqdn" {
-   value = azurerm_mysql_server.project.fqdn
- }
-
-output "recource_id" {
-  value = azurerm_mysql_database.project.id
-}
