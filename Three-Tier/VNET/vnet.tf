@@ -76,6 +76,13 @@ output "vnet_id" {
     value = azurerm_virtual_network.terraform.id
 }
 
+output "fqdn" {
+    value = azurerm_mysql_server.project.fqdn
+}
+
+output "recource_id" {
+    value = azurerm_mysql_database.project.id
+}
 
 output "subnet"{
     value = azurerm_virtual_network.terraform.subnet

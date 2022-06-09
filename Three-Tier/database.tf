@@ -22,9 +22,9 @@ resource "azurerm_mysql_server" "wordpress" {
 
 # Create MySql DataBase
 resource "azurerm_mysql_database" "wordpress" {
-  name                = "db-${(random_string.fqdn.result)}"
-  resource_group_name = azurerm_resource_group.wordpress.name
-  server_name         = azurerm_mysql_server.wordpress.name
+  name                = "projectdb"
+  resource_group_name = data.terraform_remote_state.main.outputs.resource_group_name
+  server_name         = azurerm_mysql_server.project.name
   charset             = "utf8"
   collation           = "utf8_unicode_ci"
 }
