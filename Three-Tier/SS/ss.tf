@@ -9,28 +9,6 @@ data "terraform_remote_state" "main" {
   }
 }
 
-# Team3s data
-data "terraform_remote_state" "team3" {
-  backend = "azurerm"
-  config = {
-    resource_group_name  = "StorageAccount-ResourceGroup"
-    storage_account_name = "team2project"
-    container_name       = "tfstate"
-    key                  = "path/to/my/db/prod.terraform.tfstate"
-    access_key = "0GCZCi57ChyFgG7WEFixbUBWpx72dUefChftkqSS9fhcUB1WhlvTed09zSrePjRB1lsj4aX7KdDX+ASt65cvTw=="
-  }
-}
-
-terraform {
-  backend "azurerm" {
-    resource_group_name  = "StorageAccount-ResourceGroup"
-    storage_account_name = "team2project"
-    container_name       = "tfstate"
-    key                  = "path/to/my/ss/prod.terraform.tfstate"
-    access_key = "0GCZCi57ChyFgG7WEFixbUBWpx72dUefChftkqSS9fhcUB1WhlvTed09zSrePjRB1lsj4aX7KdDX+ASt65cvTw=="
-  }
-}
-
 # Configure the Microsoft Azure Provider
 provider "azurerm" {
   features {}
@@ -92,4 +70,11 @@ resource "azurerm_traffic_manager_profile" "tm-profile" {
     interval_in_seconds          = 30
     timeout_in_seconds           = 9
     tolerated_number_of_failures = 3
+  }
+
+  resource "traffic_manager_azure_endpoint" "terraform" {
+    target_resource_id = data.terraform_remote_state.outputs.recource_id
+    name = "terraform_endpoint"
+    profile_id = azurerm_traffic_manager_profile.tm-profile.id
+    weight = 100
   }
