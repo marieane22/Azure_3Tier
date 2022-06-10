@@ -1,1 +1,3 @@
-# Azure_3Tier
+#What is three-tier architecture? 
+
+#
